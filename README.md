@@ -1,7 +1,7 @@
 # enumacro
 
-![build-badge](https://github.com/pizzamig/enumacro/workflows/Rust/badge.svg)
-macro for enums
+[![build-badge](https://github.com/pizzamig/enumacro/workflows/Rust/badge.svg)](https://github.com/pizzamig/enumacro/actions)
+[![Dependency Status](https://deps.rs/repo/github/pizzamig/enumacro/status.svg)](https://deps.rs/repo/github/pizzamig/enumacro)
 
 Educational project to learn using macros (with enum, for now)
 
