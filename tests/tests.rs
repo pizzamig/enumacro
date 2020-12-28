@@ -1,4 +1,4 @@
-use enumacro::EDefault;
+use enumacro_derive::EDefault;
 
 #[test]
 fn derive_no_default_no_generics() {
@@ -79,4 +79,80 @@ fn derive_default_multiple_generics() {
         EnumUT::<u64, f64, String>::default(),
         EnumUT::One(0, "".to_string())
     );
+}
+
+#[test]
+fn derive_default_multiple_generics_traits() {
+    #[derive(EDefault, PartialEq, Debug)]
+    enum EnumUT<T, V: ::std::fmt::Display, Z> {
+        One(T, Z),
+        #[edefault]
+        Two(V),
+    };
+    assert_eq!(
+        EnumUT::<u64, f64, String>::default(),
+        EnumUT::Two(f64::default())
+    );
+    assert_ne!(
+        EnumUT::<u64, f64, String>::default(),
+        EnumUT::One(0, "".to_string())
+    );
+}
+
+#[test]
+fn derive_default_multiple_generics_traits_where_clause() {
+    #[derive(EDefault, PartialEq, Debug)]
+    enum EnumUT<T: Default, V, Z>
+    where
+        Z: 'static + Clone + ::std::fmt::Display,
+        V: Clone,
+        T: Default,
+    {
+        One(T, Z),
+        Two(V),
+    };
+    assert_eq!(
+        EnumUT::<u64, f64, String>::default(),
+        EnumUT::One(0, "".to_string())
+    );
+    assert_ne!(
+        EnumUT::<u64, f64, String>::default(),
+        EnumUT::Two(f64::default())
+    );
+}
+
+#[test]
+fn derive_variants() {
+    use enumacro::EnumVariantsVec;
+    use enumacro_derive::EVariants;
+    #[derive(EVariants)]
+    enum EnumUT {
+        _One,
+        _Two,
+    };
+    let variants = EnumUT::get_variants();
+    assert_eq!(variants.len(), 2);
+    assert!(variants.iter().find(|&x| x == "_One").is_some());
+    assert!(variants.iter().find(|&x| x == "_Two").is_some());
+}
+#[test]
+fn derive_variants_generics() {
+    use enumacro::EnumVariantsVec;
+    use enumacro_derive::EVariants;
+    #[derive(EVariants)]
+    enum EnumUT<T: Default, V, Z>
+    where
+        Z: 'static + Clone + ::std::fmt::Display,
+        V: Clone,
+        T: Default,
+    {
+        _One(T, Z),
+        _Two(V),
+        _Three,
+    };
+    let variants = EnumUT::<u64, String, f64>::get_variants();
+    assert_eq!(variants.len(), 3);
+    assert!(variants.iter().find(|&x| x == "_One").is_some());
+    assert!(variants.iter().find(|&x| x == "_Two").is_some());
+    assert!(variants.iter().find(|&x| x == "_Three").is_some());
 }
