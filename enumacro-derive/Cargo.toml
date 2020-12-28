@@ -12,3 +12,4 @@ proc-macro = true
 syn = {version = "1", features=["derive","parsing","printing","clone-impls","extra-traits","proc-macro"]}
 quote = "1"
 proc-macro2 = "1"
+proc-macro-error = "1"

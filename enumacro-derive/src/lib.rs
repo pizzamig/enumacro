@@ -1,8 +1,10 @@
 use proc_macro::TokenStream;
+use proc_macro_error::{abort_call_site, emit_warning, proc_macro_error};
 use quote::quote;
 use syn::parse_macro_input;
 
 #[proc_macro_derive(EDefault, attributes(edefault))]
+#[proc_macro_error]
 pub fn enum_default_derive(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as syn::DeriveInput);
     //dbg!(&ast);
@@ -14,6 +16,7 @@ pub fn enum_default_derive(input: TokenStream) -> TokenStream {
                 if let Some(ident) = find_variant_ident(&data) {
                     impl_edefault(&name, &generics, &ident)
                 } else {
+                    emit_warning!(name, "No variants available for enum {}", name; help="Add at least a variant to the enum {}", name; note = "the Default trait is not implemented");
                     TokenStream::default()
                 }
             } else if let Some(variant_ident) = find_variant_ident(&data) {
@@ -24,10 +27,11 @@ pub fn enum_default_derive(input: TokenStream) -> TokenStream {
                     impl_edefault2(&name, &generics, &variant_ident, &variant_generic_idents)
                 }
             } else {
+                emit_warning!(name, "No variants available for enum {}", name; help="Add at least a variant to the enum {}", name; note = "the Default trait is not implemented");
                 TokenStream::default()
             }
         }
-        _ => TokenStream::default(),
+        _ => abort_call_site!("Only enum are supported"),
     }
 }
 
@@ -45,7 +49,7 @@ pub fn enum_variants_derive(input: TokenStream) -> TokenStream {
             let generics = ast.generics;
             impl_evariants(&name, &generics, &variants)
         }
-        _ => TokenStream::default(),
+        _ => abort_call_site!("Only enum are supported"),
     }
 }
 
