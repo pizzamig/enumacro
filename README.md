@@ -1,6 +1,6 @@
 # enumacro
 
-![build-badge](https://github.com/actions/pizzamig/enumacro/workflows/Rust/badge.svg)
+![build-badge](https://github.com/pizzamig/enumacro/workflows/Rust/badge.svg)
 macro for enums
 
 Educational project to learn using macros (with enum, for now)
