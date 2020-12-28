@@ -3,6 +3,10 @@ name = "enumacro"
 version = "0.1.0"
 authors = ["Luca Pizzamiglio <pizzamig@FreeBSD.org>"]
 edition = "2018"
+description = "Add derive macro for enum"
+keywords = ["derive", "enum"]
+license = "Apache-2.0 or MIT"
+readme = "README.md"
 
 [dependencies]
 enumacro-derive = { path = "enumacro-derive", version = "=0.1.0" }
