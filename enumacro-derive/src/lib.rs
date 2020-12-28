@@ -155,9 +155,6 @@ fn impl_evariants(
     _variants: &[syn::Ident],
 ) -> TokenStream {
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-    //println!("{:?}", impl_generics);
-    //println!("{:?}", ty_generics);
-    //println!("{:?}", where_clause);
     let mut init = "[".to_string();
     for v in _variants.iter() {
         init.push('"');

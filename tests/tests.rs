@@ -132,8 +132,8 @@ fn derive_variants() {
     };
     let variants = EnumUT::get_variants();
     assert_eq!(variants.len(), 2);
-    assert!(variants.iter().find(|&x| x == "_One").is_some());
-    assert!(variants.iter().find(|&x| x == "_Two").is_some());
+    assert!(variants.iter().any(|x| x == "_One"));
+    assert!(variants.iter().any(|x| x == "_Two"));
 }
 #[test]
 fn derive_variants_generics() {
@@ -152,7 +152,22 @@ fn derive_variants_generics() {
     };
     let variants = EnumUT::<u64, String, f64>::get_variants();
     assert_eq!(variants.len(), 3);
-    assert!(variants.iter().find(|&x| x == "_One").is_some());
-    assert!(variants.iter().find(|&x| x == "_Two").is_some());
-    assert!(variants.iter().find(|&x| x == "_Three").is_some());
+    assert!(variants.iter().any(|x| x == "_One"));
+    assert!(variants.iter().any(|x| x == "_Two"));
+    assert!(variants.iter().any(|x| x == "_Three"));
 }
+
+// This test won't compile, but an appropriate error message will be displayed
+//#[test]
+//fn defive_default_on_struct() {
+//#[derive(EDefault, PartialEq, Debug)]
+//struct NotEnum {
+//a: u64,
+//};
+//}
+//
+//#[test]
+//fn derive_default_empty_enum() {
+//#[derive(EDefault)]
+//enum _EnumUT {};
+//}
