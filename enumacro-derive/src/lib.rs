@@ -96,6 +96,18 @@ fn impl_edefault(name: &syn::Ident, generics: &syn::Generics, variant: &syn::Ide
     result.into()
 }
 
+fn add_default_trait_if_needed(predicate: &mut syn::WherePredicate, generic_ident: &syn::Ident) {
+    if let syn::WherePredicate::Type(pt) = predicate {
+        if let syn::Type::Path(tp) = pt.bounded_ty.clone() {
+            if tp.path.is_ident(generic_ident) {
+                let default_type: syn::TraitBound = syn::parse_str("Default").unwrap();
+                let default_trait = syn::TypeParamBound::Trait(default_type);
+                pt.bounds.push(default_trait);
+            }
+        }
+    }
+}
+
 fn impl_edefault2(
     name: &syn::Ident,
     generics: &syn::Generics,
@@ -108,15 +120,7 @@ fn impl_edefault2(
         use quote::ToTokens;
         for g in generic_idents.iter() {
             for p in where_clause.predicates.iter_mut() {
-                if let syn::WherePredicate::Type(pt) = p {
-                    if let syn::Type::Path(tp) = pt.bounded_ty.clone() {
-                        if tp.path.is_ident(g) {
-                            let default_type: syn::TraitBound = syn::parse_str("Default").unwrap();
-                            let default_trait = syn::TypeParamBound::Trait(default_type);
-                            pt.bounds.push(default_trait);
-                        }
-                    }
-                }
+                add_default_trait_if_needed(p, g);
             }
         }
         where_clause.to_token_stream()
