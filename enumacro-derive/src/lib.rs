@@ -96,7 +96,7 @@ fn impl_edefault(name: &syn::Ident, generics: &syn::Generics, variant: &syn::Ide
     result.into()
 }
 
-fn add_generic_ident_if_needed(predicate: &mut syn::WherePredicate, generic_ident: &syn::Ident) {
+fn add_default_trait_if_needed(predicate: &mut syn::WherePredicate, generic_ident: &syn::Ident) {
     if let syn::WherePredicate::Type(pt) = predicate {
         if let syn::Type::Path(tp) = pt.bounded_ty.clone() {
             if tp.path.is_ident(generic_ident) {
@@ -107,6 +107,7 @@ fn add_generic_ident_if_needed(predicate: &mut syn::WherePredicate, generic_iden
         }
     }
 }
+
 fn impl_edefault2(
     name: &syn::Ident,
     generics: &syn::Generics,
@@ -119,7 +120,7 @@ fn impl_edefault2(
         use quote::ToTokens;
         for g in generic_idents.iter() {
             for p in where_clause.predicates.iter_mut() {
-                add_generic_ident_if_needed(p, g);
+                add_default_trait_if_needed(p, g);
             }
         }
         where_clause.to_token_stream()
